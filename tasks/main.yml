@@ -7,6 +7,7 @@
     cert={{ dir }}/ssh_host_{{ item }}_key-cert.pub
     cert_id={{ cert_id }}
     cert_names={{ cert_names | join(',') }}
+    cert_valid={{ cert_valid }}
     type={{ item }}
   with_items:
     - rsa

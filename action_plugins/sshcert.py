@@ -33,6 +33,7 @@ class ActionModule(object):
         cert = options['cert']
         cert_id = options['cert_id']
         cert_names = options['cert_names']
+        cert_valid = options['cert_valid']
 
         if not os.path.exists(signkey):
             result=dict(failed=True, msg="could not find signing key")
@@ -62,6 +63,7 @@ class ActionModule(object):
                     '-I', cert_id,
                     '-n', cert_names,
                     '-h',
+                    '-V', cert_valid,
                     pubkey_local
                 ),
                 stderr=subprocess.STDOUT,
