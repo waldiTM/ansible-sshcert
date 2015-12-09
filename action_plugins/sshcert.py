@@ -60,9 +60,9 @@ class ActionModule(object):
                 (
                     'ssh-keygen',
                     '-s', signkey,
+                    '-h',
                     '-I', cert_id,
                     '-n', cert_names,
-                    '-h',
                     '-V', cert_valid,
                     pubkey_local
                 ),
