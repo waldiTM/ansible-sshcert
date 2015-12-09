@@ -31,6 +31,8 @@ class ActionModule(object):
         signkey = options['signkey']
         pubkey = options['pubkey']
         cert = options['cert']
+        cert_id = options['cert_id']
+        cert_names = options['cert_names']
 
         if not os.path.exists(signkey):
             result=dict(failed=True, msg="could not find signing key")
@@ -57,8 +59,8 @@ class ActionModule(object):
                 (
                     'ssh-keygen',
                     '-s', signkey,
-                    '-I', inject['inventory_hostname'],
-                    '-n', inject['inventory_hostname'],
+                    '-I', cert_id,
+                    '-n', cert_names,
                     '-h',
                     pubkey_local
                 ),
