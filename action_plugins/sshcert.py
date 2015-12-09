@@ -67,7 +67,7 @@ class ActionModule(object):
                 stderr=subprocess.STDOUT,
             )
 
-            copy_result = self.runner._execute_module(
+            return self.runner._execute_module(
                 conn, tmp, 'copy',
                 utils.merge_module_args('', {
                     'src': cert_local,
@@ -75,11 +75,5 @@ class ActionModule(object):
                 }),
                 inject=inject, complex_args=complex_args, delete_remote_tmp=True)
 
-            # XXX: Check copy_result
-
         finally:
             shutil.rmtree(tmp_local)
-
-        result=dict(changed=True)
-        return ReturnData(conn=conn, result=result)
-
