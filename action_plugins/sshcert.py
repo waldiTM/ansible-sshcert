@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# Copyright: 2015 Bastian Blank
+# License: MIT, see LICENSE for details.
+
+
 import base64
 import os
 import shutil
