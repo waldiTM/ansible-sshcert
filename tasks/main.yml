@@ -1,6 +1,11 @@
 ---
 - name: Create SSH key certificates
-  action: sshcert signkey={{ signkey }} pubkey={{ dir }}/ssh_host_{{ item }}_key.pub cert={{ dir }}/ssh_host_{{ item }}_key-cert.pub type={{ item }}
+  action: >
+    sshcert
+    signkey={{ signkey }}
+    pubkey={{ dir }}/ssh_host_{{ item }}_key.pub
+    cert={{ dir }}/ssh_host_{{ item }}_key-cert.pub
+    type={{ item }}
   with_items:
     - rsa
     - ed25519
