@@ -74,6 +74,8 @@ class ActionModule(ActionBase):
                 stderr=subprocess.STDOUT,
             )
 
+            result['sign'] = out.strip()
+
             result.update(self._execute_module(
                 module_name='copy',
                 module_args = {
