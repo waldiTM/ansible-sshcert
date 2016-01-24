@@ -67,7 +67,7 @@ class ActionModule(ActionBase):
                     '-s', signkey,
                     '-h',
                     '-I', cert_id,
-                    '-n', cert_names,
+                    '-n', ','.join(cert_names),
                     '-V', cert_valid,
                     pubkey_local
                 ),
