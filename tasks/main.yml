@@ -13,6 +13,4 @@
       cert_id: "{{ cert_id }}"
       cert_names: "{{ cert_names }}"
       cert_valid: "{{ cert_valid }}"
-  with_items:
-    - rsa
-    - ed25519
+  with_items: "{{ key_types }}"
