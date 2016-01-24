@@ -54,8 +54,9 @@ class ActionModule(ActionBase):
 
         tmp_local = tempfile.mkdtemp()
         try:
-            pubkey_local = os.path.join(tmp_local, 'key.pub')
-            cert_local = os.path.join(tmp_local, 'key-cert.pub')
+            base_local = os.path.join(tmp_local, 'key')
+            pubkey_local = base_local + '.pub'
+            cert_local = base_local + '-cert.pub'
 
             with open(pubkey_local, 'w') as f:
                 f.write(pubkey_content)
@@ -68,7 +69,7 @@ class ActionModule(ActionBase):
                     '-I', cert_id,
                     '-n', ','.join(cert_names),
                     '-V', cert_valid,
-                    pubkey_local
+                    base_local
                 ),
                 stderr=subprocess.STDOUT,
             )
