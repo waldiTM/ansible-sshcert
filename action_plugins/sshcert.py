@@ -9,7 +9,6 @@ import shutil
 import subprocess
 import tempfile
 
-from ansible import utils
 from ansible.plugins.action import ActionBase
 
 
