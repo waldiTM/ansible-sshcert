@@ -83,5 +83,10 @@ class ActionModule(ActionBase):
                 task_vars=task_vars))
             return result
 
+        except subprocess.CalledProcessError as e:
+            result['failed'] = True
+            result['msg'] = 'could not sign key: {}'.format(e.output.strip())
+            return result
+
         finally:
             shutil.rmtree(tmp_local)
