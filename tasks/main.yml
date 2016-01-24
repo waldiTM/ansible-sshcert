@@ -13,7 +13,6 @@
       cert_id: "{{ cert_id }}"
       cert_names: "{{ cert_names }}"
       cert_valid: "{{ cert_valid }}"
-      type: "{{ item }}"
   with_items:
     - rsa
     - ed25519
