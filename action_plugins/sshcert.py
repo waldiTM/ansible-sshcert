@@ -10,46 +10,46 @@ import subprocess
 import tempfile
 
 from ansible import utils
-from ansible.runner.return_data import ReturnData
+from ansible.plugins.action import ActionBase
 
 
-class ActionModule(object):
-    def __init__(self, runner):
-        self.runner = runner
+class ActionModule(ActionBase):
+    def _download(self, name, tmp, task_vars):
+        result = self._execute_module(
+            module_name='slurp',
+            module_args={'path': name},
+            tmp=tmp,
+            task_vars=task_vars)
 
-    def _download(self, conn, tmp, name, inject):
-        result = self.runner._execute_module(conn, tmp, 'slurp', "path=%s" % name, inject=inject, persist_files=True)
-
-        if 'content' in result.result:
-            content = result.result['content']
-            if result.result['encoding'] == 'base64':
+        if 'content' in result:
+            content = result['content']
+            if result['encoding'] == 'base64':
                 return base64.b64decode(content)
             else:
-                raise Exception("unknown encoding, failed: %s" % result.result)
+                raise Exception("unknown encoding, failed: %s" % result)
 
-    def run(self, conn, tmp, module_name, module_args, inject, complex_args=None, **kwargs):
-        options = {}
-        if complex_args:
-            options.update(complex_args)
-        options.update(utils.parse_kv(module_args))
+    def run(self, tmp=None, task_vars=None):
+        result = super(ActionModule, self).run(tmp, task_vars)
 
-        signkey = options['signkey']
-        pubkey = options['pubkey']
-        cert = options['cert']
-        cert_id = options['cert_id']
-        cert_names = options['cert_names']
-        cert_valid = options['cert_valid']
+        signkey = self._task.args.get('signkey')
+        pubkey = self._task.args.get('pubkey')
+        cert = self._task.args.get('cert')
+        cert_id = self._task.args.get('cert_id')
+        cert_names = self._task.args.get('cert_names')
+        cert_valid = self._task.args.get('cert_valid')
 
         if not os.path.exists(signkey):
-            result=dict(failed=True, msg="could not find signing key")
-            return ReturnData(conn=conn, result=result)
+            result['failed'] = True
+            result['msg'] = "could not find signing key"
+            return result
 
-        pubkey_content = self._download(conn, tmp, pubkey, inject)
-        cert_content = self._download(conn, tmp, cert, inject)
+        pubkey_content = self._download(pubkey, tmp, task_vars)
+        cert_content = self._download(cert, tmp, task_vars)
 
         if not pubkey_content:
-            result=dict(skipped=True, msg="could not find public key")
-            return ReturnData(conn=conn, result=result)
+            result['skipped'] = True
+            result['msg'] = "could not find public key"
+            return result
 
         # XXX: Check existing cert
 
@@ -74,13 +74,14 @@ class ActionModule(object):
                 stderr=subprocess.STDOUT,
             )
 
-            return self.runner._execute_module(
-                conn, tmp, 'copy',
-                utils.merge_module_args('', {
+            result.update(self._execute_module(
+                module_name='copy',
+                module_args = {
                     'src': cert_local,
                     'dest': cert,
-                }),
-                inject=inject, complex_args=complex_args, delete_remote_tmp=True)
+                },
+                task_vars=task_vars))
+            return result
 
         finally:
             shutil.rmtree(tmp_local)
