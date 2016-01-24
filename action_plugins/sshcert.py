@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright: 2015 Bastian Blank
+# Copyright: 2015,2016 Bastian Blank
 # License: MIT, see LICENSE for details.
 
 
