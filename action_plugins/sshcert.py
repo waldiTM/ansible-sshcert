@@ -46,18 +46,21 @@ class ActionModule(ActionBase):
 
         if cert_resign:
             m = re.match(r'^(\d+)([sSmMhHdDwW])?$', str(cert_resign))
-            m_time = int(m.group(1))
-            m_qual = m.group(2)
-            if m_qual in ('w', 'W'):
-                cert_resign = datetime.utcnow() + timedelta(weeks=m_time)
-            elif m_qual in ('d', 'd'):
-                cert_resign = datetime.utcnow() + timedelta(days=m_time)
-            elif m_qual in ('h', 'h'):
-                cert_resign = datetime.utcnow() + timedelta(hours=m_time)
-            elif m_qual in ('m', 'm'):
-                cert_resign = datetime.utcnow() + timedelta(minutes=m_time)
+            if m:
+                m_time = int(m.group(1))
+                m_qual = m.group(2)
+                if m_qual in ('w', 'W'):
+                    cert_resign = datetime.utcnow() + timedelta(weeks=m_time)
+                elif m_qual in ('d', 'd'):
+                    cert_resign = datetime.utcnow() + timedelta(days=m_time)
+                elif m_qual in ('h', 'h'):
+                    cert_resign = datetime.utcnow() + timedelta(hours=m_time)
+                elif m_qual in ('m', 'm'):
+                    cert_resign = datetime.utcnow() + timedelta(minutes=m_time)
+                else:
+                    cert_resign = datetime.utcnow() + timedelta(seconds=m_time)
             else:
-                cert_resign = datetime.utcnow() + timedelta(seconds=m_time)
+                cert_resign = datetime.max
 
         if not os.path.exists(signkey):
             result['failed'] = True
