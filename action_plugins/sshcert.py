@@ -58,9 +58,10 @@ class ActionModule(ActionBase):
             result['msg'] = "could not find public key {}".format(pubkey)
             return result
 
-        # XXX: Check existing cert
         cert_content = self._download(cert, tmp, task_vars)
-        cert_data = SshFile.read(cert_content)
+        if cert_content:
+            # XXX: Check existing cert
+            cert_data = SshFile.read(cert_content)
 
         tmp_local = tempfile.mkdtemp()
         try:
