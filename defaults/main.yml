@@ -9,6 +9,7 @@ signkey: sshcert
 cert_id: "{{ inventory_hostname }}"
 cert_names:
   - "{{ inventory_hostname }}"
+cert_resign: null
 cert_valid: -1h:+8w
 key_types:
   - rsa

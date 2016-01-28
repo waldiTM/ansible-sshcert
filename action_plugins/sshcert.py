@@ -7,10 +7,13 @@ import base64
 import codecs
 import collections
 import os
+import re
 import shutil
 import struct
 import subprocess
 import tempfile
+
+from datetime import datetime, timedelta
 
 from ansible.plugins.action import ActionBase
 
@@ -38,7 +41,23 @@ class ActionModule(ActionBase):
         cert = self._task.args.get('cert')
         cert_id = self._task.args.get('cert_id')
         cert_names = self._task.args.get('cert_names')
+        cert_resign = self._task.args.get('cert_resign')
         cert_valid = self._task.args.get('cert_valid')
+
+        if cert_resign:
+            m = re.match(r'^(\d+)([sSmMhHdDwW])?$', str(cert_resign))
+            m_time = int(m.group(1))
+            m_qual = m.group(2)
+            if m_qual in ('w', 'W'):
+                cert_resign = datetime.utcnow() + timedelta(weeks=m_time)
+            elif m_qual in ('d', 'd'):
+                cert_resign = datetime.utcnow() + timedelta(days=m_time)
+            elif m_qual in ('h', 'h'):
+                cert_resign = datetime.utcnow() + timedelta(hours=m_time)
+            elif m_qual in ('m', 'm'):
+                cert_resign = datetime.utcnow() + timedelta(minutes=m_time)
+            else:
+                cert_resign = datetime.utcnow() + timedelta(seconds=m_time)
 
         if not os.path.exists(signkey):
             result['failed'] = True
