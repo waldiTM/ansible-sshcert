@@ -50,11 +50,17 @@ class ActionModule(ActionBase):
 
         if not pubkey_content:
             result['skipped'] = True
-            result['msg'] = "could not find public key"
+            result['msg'] = "could not find public key {}".format(pubkey)
             return result
 
         # XXX: Check existing cert
-        pubkey_data = SshFile.read(pubkey_content)
+        try:
+            pubkey_data = SshFile.read(pubkey_content)
+        except Exception as e:
+            result['failed'] = True
+            result['msg'] = "could not parse public key {}: {}".format(pubkey, e)
+            return result
+
         cert_data = SshFile.read(cert_content)
 
         tmp_local = tempfile.mkdtemp()
