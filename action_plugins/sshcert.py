@@ -28,7 +28,7 @@ class ActionModule(ActionBase):
             if result['encoding'] == 'base64':
                 return base64.b64decode(content)
             else:
-                raise Exception("unknown encoding, failed: %s" % result)
+                raise NotImplementedError("unknown encoding, failed: %s" % result)
 
     def run(self, tmp=None, task_vars=None):
         result = super(ActionModule, self).run(tmp, task_vars)
@@ -191,7 +191,7 @@ class SshFile(object):
         i_data = SshWirestring(codecs.decode(i[1], 'base64'))
         i_datatype = i_data.read_string()
         if i_type != i_datatype:
-            raise RuntimeError
+            raise RuntimeError('Key type mismatch')
 
         if i_type.endswith('-cert-v01@openssh.com'):
             return SshCert(i_data, cls.types[i_type[0:-21]])
