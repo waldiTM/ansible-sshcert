@@ -89,7 +89,7 @@ class ActionModule(ActionBase):
                 # Re-sign invalid certificates
                 pass
             else:
-                if cert_resign:
+                if cert_resign and cert_resign > cert_data.validbefore:
                     pass
                 else:
                     return result
@@ -206,8 +206,8 @@ class SshCert(collections.namedtuple('SshCert', ('key', 'princs', 'validafter', 
         type = cert.read_uint32()
         keyid = cert.read_string().tobytes().decode('utf-8')
         princs = cert.read_string().tobytes().decode('utf-8').split(',')
-        validafter = cert.read_uint64()
-        validbefore = cert.read_uint64()
+        validafter = datetime.utcfromtimestamp(cert.read_uint64())
+        validbefore = datetime.utcfromtimestamp(cert.read_uint64())
         return super(SshCert, cls).__new__(cls, key, princs, validafter, validbefore)
 
 
