@@ -118,14 +118,16 @@ class ActionModule(ActionBase):
 
             result['sign'] = out.strip()
 
-            result.update(self._execute_module(
+            res = self._execute_module(
                 module_name='copy',
                 module_args = {
                     'src': cert_local,
                     'dest': cert,
                 },
-                task_vars=task_vars))
-            return result
+                task_vars=task_vars)
+            res.update(result)
+            del res['src']
+            return res
 
         except subprocess.CalledProcessError as e:
             result['failed'] = True
