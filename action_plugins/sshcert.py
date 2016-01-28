@@ -80,7 +80,16 @@ class ActionModule(ActionBase):
         cert_content = self._download(cert, tmp, task_vars)
         if cert_content:
             # XXX: Check existing cert
-            cert_data = SshFile.read(cert_content)
+            try:
+                cert_data = SshFile.read(cert_content)
+            except Exception as e:
+                # Re-sign invalid certificates
+                pass
+            else:
+                if cert_resign:
+                    pass
+                else:
+                    return result
 
         tmp_local = tempfile.mkdtemp()
         try:
